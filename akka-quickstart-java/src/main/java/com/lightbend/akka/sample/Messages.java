@@ -1,8 +1,10 @@
 package com.lightbend.akka.sample;
 
+import java.io.Serializable;
+
 public class Messages {
 
-    public static final class Connect {
+    public static final class Connect implements Serializable {
 
         public String username;
 
@@ -12,7 +14,7 @@ public class Messages {
 
     }
 
-    public static final class Disconnect {
+    public static final class Disconnect implements Serializable {
 
         public String username;
 
@@ -23,7 +25,7 @@ public class Messages {
 
     }
 
-    public static final class SendTextToUser {
+    public static final class SendTextToUser implements Serializable {
 
         public String username;
         public String target;
@@ -37,7 +39,7 @@ public class Messages {
 
     }
 
-    public static final class SendFileToUser {
+    public static final class SendFileToUser implements Serializable {
 
         public String username;
         public String target;
@@ -51,7 +53,7 @@ public class Messages {
 
     }
 
-    public static final class CreateGroup {
+    public static final class CreateGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -63,7 +65,7 @@ public class Messages {
 
     }
 
-    public static final class LeaveGroup {
+    public static final class LeaveGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -75,7 +77,7 @@ public class Messages {
 
     }
 
-    public static final class SendTextToGroup {
+    public static final class SendTextToGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -89,7 +91,7 @@ public class Messages {
 
     }
 
-    public static final class SendFileToGroup {
+    public static final class SendFileToGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -103,7 +105,7 @@ public class Messages {
 
     }
 
-    public static final class InviteUserToGroup {
+    public static final class InviteUserToGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -117,7 +119,7 @@ public class Messages {
 
     }
 
-    public static final class InvitePending {
+    public static final class InvitePending implements Serializable {
 
         public String username;
         public String groupname;
@@ -133,23 +135,21 @@ public class Messages {
 
     }
 
-    public static final class InviteAnswer {
+    public static final class InviteAnswer implements Serializable {
 
         public String username;
         public String groupname;
-        public String target;
         public String answer;
 
-        public InviteAnswer(String username, String groupname, String target, String answer) {
+        public InviteAnswer(String username, String groupname, String answer) {
             this.username = username;
             this.groupname = groupname;
-            this.target = target;
             this.answer = answer;
         }
 
     }
 
-    public static final class RemoveUserFromGroup {
+    public static final class RemoveUserFromGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -163,7 +163,7 @@ public class Messages {
 
     }
 
-    public static final class MuteUserInGroup {
+    public static final class MuteUserInGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -179,7 +179,7 @@ public class Messages {
 
     }
 
-    public static final class UnmuteUserInGroup {
+    public static final class UnmuteUserInGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -193,7 +193,7 @@ public class Messages {
 
     }
 
-    public static final class PromoteCoAdminInGroup {
+    public static final class PromoteCoAdminInGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -207,7 +207,7 @@ public class Messages {
 
     }
 
-    public static final class DemoteCoAdminInGroup {
+    public static final class DemoteCoAdminInGroup implements Serializable {
 
         public String username;
         public String groupname;
@@ -222,9 +222,9 @@ public class Messages {
     }
 
 
-    /////////////////////////////////////// SERVER REPLIES ///////////////////////////////////////
+    /////////////////////////////////////// SERVER REPLY ///////////////////////////////////////
 
-    public static final class ServerReply {
+    public static final class ServerReply implements Serializable {
 
         public String serverReply;
 
@@ -233,6 +233,7 @@ public class Messages {
         }
 
     }
+
 
 
 }
