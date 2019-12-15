@@ -1,6 +1,7 @@
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -60,23 +61,24 @@ public class ManagingServer extends AbstractActor {
         // need to check if the server is down (from the client's side) and act accordingly
         // (how can we know if the server is down? how much time should we wait for an ack/error?)
         if (isUserInSystem(message.username)) {
-            getSender().tell(new Messages.ServerReply(message.username + " is in use!"), ActorRef.noSender());
+            getSender().tell(message.username + " is in use!", ActorRef.noSender());
         } else {
             addUserToSystem(message.username);
-            getSender().tell(new Messages.ServerReply(message.username + " has connected successfully!"), ActorRef.noSender());
+            getSender().tell(message.username + " has connected successfully!", ActorRef.noSender());
         }
     }
 
     private void onDisconnect(Messages.Disconnect message) {
+        System.out.println("Received Disconnect from " + message.username);
         // need to check if the server is down (from the client's side) and act accordingly
         // (how can we know if the server is down? how much time should we wait for an ack/error?)
         if (isUserInSystem(message.username)) {
+            getSender().tell(message.username + " has been disconnected successfully!", ActorRef.noSender());
             leaveAllGroups(message.username);
             removeUserFromSystem(message.username);
-            getSender().tell(message.username + " has been disconnected successfully!", ActorRef.noSender());
         } else {
             // I ADDED THIS ERROR
-            getSender().tell(new Messages.ServerReply(message.username + " does not exist!"), ActorRef.noSender());
+            getSender().tell(message.username + " is not connected!", ActorRef.noSender());
             // I ADDED THIS ERROR
         }
     }
@@ -100,21 +102,14 @@ public class ManagingServer extends AbstractActor {
             groupRegularUsers.put(message.groupname, new ConcurrentLinkedQueue<>());
             // initialize the list of coAdmins
             groupCoAdmins.put(message.groupname, new ConcurrentLinkedQueue<>());
-            getSender().tell(new Messages.ServerReply(message.groupname + " created successfully!"), ActorRef.noSender());
+            getSender().tell(message.groupname + " created successfully!", ActorRef.noSender());
         }
     }
 
     private void onLeaveGroup(Messages.LeaveGroup message) {
         if (!isUserInGroup(message.groupname, message.username)) {
-            getSender().tell(new Messages.ServerReply(message.username + " is not in " + message.groupname + "!"), ActorRef.noSender());
+            getSender().tell(message.username + " is not in " + message.groupname + "!", ActorRef.noSender());
         } else {
-            // remove user from the group
-            groupAllUsers.get(message.groupname).remove(message.username);
-            removeRegularUserFromGroup(message.groupname, message.username);
-            removeMutedUserFromGroup(message.groupname, message.username);
-
-            // if the user is a coAdmin then remove this privilege
-            removeCoAdminFromGroup(message.groupname, message.username);
 
             // BROADCAST TO GROUP
             broadcastFromServer(message.groupname, message.username + " has left " + message.groupname + "!");
@@ -124,6 +119,17 @@ public class ManagingServer extends AbstractActor {
                 broadcastFromServer(message.groupname, message.groupname + " admin has closed " + message.groupname + "!");
                 deleteGroupFromSystem(message.groupname);
             }
+
+            // remove user from the group
+            if (isUserInGroup(message.groupname, message.username)) {
+                groupAllUsers.get(message.groupname).remove(message.username);
+            }
+            removeRegularUserFromGroup(message.groupname, message.username);
+            removeMutedUserFromGroup(message.groupname, message.username);
+
+            // if the user is a coAdmin then remove this privilege
+            removeCoAdminFromGroup(message.groupname, message.username);
+
         }
     }
 
@@ -137,7 +143,7 @@ public class ManagingServer extends AbstractActor {
     private void onSendFileToGroup(Messages.SendFileToGroup message) {
         if (validMessageToGroup(message.groupname, message.username)) {
 //            if (sourceFilePath is not valid) {
-//                getSender().tell(new Messages.ServerReply(message.sourceFilePath + " does not exists!"), ActorRef.noSender());
+//                getSender().tell(message.sourceFilePath + " does not exists!"), ActorRef.noSender());
 //            } else {
             /////////////////////////////// NEEDS CHANGING ///////////////////////////////
             // successful file send
@@ -151,9 +157,11 @@ public class ManagingServer extends AbstractActor {
         if (validInviteRemovalMuteUnmuteInGroup(message.groupname, message.username, message.target)) {
             // target is already in group
             if (isUserInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is already in " + message.groupname + "!"), ActorRef.noSender());
+                getSender().tell(message.target + " is already in " + message.groupname + "!", ActorRef.noSender());
             } else {
-                getUserRef(message.target).tell(new Messages.InvitePending(message.username, message.groupname, message.target, "You have been invited to " + message.groupname + ", Accept?"), getUserRef(message.username));
+                if (isUserInSystem(message.username) && isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell(new Messages.InvitePending(message.username, message.groupname, message.target, "You have been invited to " + message.groupname + ", Accept?"), getUserRef(message.username));
+                }
             }
         }
     }
@@ -161,17 +169,19 @@ public class ManagingServer extends AbstractActor {
     private void onInviteAnswer(Messages.InviteAnswer message) {
         // group does not exist
         if (!isGroupInSystem(message.groupname)) {
-            getSender().tell(new Messages.ServerReply(message.groupname + " does not exists!"), ActorRef.noSender());
+            getSender().tell(message.groupname + " does not exists!", ActorRef.noSender());
         }
         // username doesn't exist
         else if (!isUserInSystem(message.username)) {
-            getSender().tell(new Messages.ServerReply(message.username + " does not exists!"), ActorRef.noSender());
+            getSender().tell(message.username + " does not exists!", ActorRef.noSender());
         }
         // username is already in group
         else if (isUserInGroup(message.groupname, message.username)) {
-            getSender().tell(new Messages.ServerReply(message.username + " is already in " + message.groupname + "!"), ActorRef.noSender());
-        } else if (message.answer.equals("Yes")){
-            getUserRef(message.username).tell(new Messages.ServerReply(message.username + "Welcome to " + message.groupname + "!"), ActorRef.noSender());
+            getSender().tell(message.username + " is already in " + message.groupname + "!", ActorRef.noSender());
+        } else if (message.answer.equals("Yes")) {
+            if (isUserInSystem(message.username)) {
+                getUserRef(message.username).tell(message.username + "Welcome to " + message.groupname + "!", ActorRef.noSender());
+            }
         }
 
     }
@@ -180,23 +190,27 @@ public class ManagingServer extends AbstractActor {
         if (validInviteRemovalMuteUnmuteInGroup(message.groupname, message.username, message.target)) {
             // target is not in group
             if (!isUserInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is not in " + message.groupname + "!"), ActorRef.noSender());
+                getSender().tell(message.target + " is not in " + message.groupname + "!", ActorRef.noSender());
             }
             // target is the group's admin
             else if (isAdminInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.username + " is an admin thus can't be removed!"), ActorRef.noSender());
+                getSender().tell(message.username + " is an admin thus can't be removed!", ActorRef.noSender());
             }
             // target removed
             else {
 //                getSender().tell(new Messages.LeaveGroup(message.target, message.groupname), ActorRef.noSender());
                 // remove user from the group
-                groupAllUsers.get(message.groupname).remove(message.target);
+                if (isUserInGroup(message.groupname, message.target)) {
+                    groupAllUsers.get(message.groupname).remove(message.target);
+                }
                 removeRegularUserFromGroup(message.groupname, message.target);
                 removeMutedUserFromGroup(message.groupname, message.target);
                 // if the user is a coAdmin then remove this privilege
                 removeCoAdminFromGroup(message.groupname, message.target);
 
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been removed from " + message.groupname + " by " + message.username + "!"), ActorRef.noSender());
+                if (isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell("You have been removed from " + message.groupname + " by " + message.username + "!", ActorRef.noSender());
+                }
             }
         }
     }
@@ -205,23 +219,29 @@ public class ManagingServer extends AbstractActor {
         if (validInviteRemovalMuteUnmuteInGroup(message.groupname, message.username, message.target)) {
             // target is a co-admin and username is a co-admin
             if (isCoAdminInGroup(message.groupname, message.target) && isCoAdminInGroup(message.groupname, message.username)) {
-                getSender().tell(new Messages.ServerReply(message.username + " is a co-admin thus can't mute the target co-admin" + message.target + "!"), ActorRef.noSender());
+                getSender().tell(message.username + " is a co-admin thus can't mute the target co-admin" + message.target + "!", ActorRef.noSender());
             }
             // already muted user
             else if (isMutedUserInGroup(message.groupname, message.username)) {
                 groupMutedUsers.get(message.groupname).replace(message.username, message.timeout);
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been muted for " + message.timeout + " in " + message.groupname + " by " + message.username + "!"), ActorRef.noSender());
+                if (isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell("You have been muted for " + message.timeout + " in " + message.groupname + " by " + message.username + "!", ActorRef.noSender());
+                }
             }
             // target is the group's admin
             else if (isAdminInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is the admin thus can't be muted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is the admin thus can't be muted!", ActorRef.noSender());
             }
             // target muted
             else {
                 removeCoAdminFromGroup(message.groupname, message.target);
                 removeRegularUserFromGroup(message.groupname, message.target);
-                addMutedUserToGroup(message.groupname, message.target, message.timeout);
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been muted for " + message.timeout + " in " + message.groupname + " by " + message.username + "!"), ActorRef.noSender());
+                if (isMutedUserInGroup(message.groupname, message.username)) {
+                    addMutedUserToGroup(message.groupname, message.target, message.timeout);
+                }
+                if (isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell("You have been muted for " + message.timeout + " in " + message.groupname + " by " + message.username + "!", ActorRef.noSender());
+                }
                 /////////////////////////////// NEEDS CHANGING ///////////////////////////////
                 // support automatic unmute
                 /////////////////////////////// NEEDS CHANGING ///////////////////////////////
@@ -237,9 +257,10 @@ public class ManagingServer extends AbstractActor {
                 removeMutedUserFromGroup(message.groupname, message.username);
                 groupRegularUsers.put(message.groupname, new ConcurrentLinkedQueue<>());
                 addRegularUserToGroup(message.groupname, message.target);
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been unmuted in " + message.groupname + " by " + message.username + "!"), ActorRef.noSender());
+                if (isUserInSystem(message.target))
+                    getUserRef(message.target).tell("You have been unmuted in " + message.groupname + " by " + message.username + "!", ActorRef.noSender());
             } else {
-                getSender().tell(new Messages.ServerReply(message.target + " is not muted !"), ActorRef.noSender());
+                getSender().tell(message.target + " is not muted !", ActorRef.noSender());
             }
         }
     }
@@ -249,11 +270,11 @@ public class ManagingServer extends AbstractActor {
         if (validPromoteDemoteInGroup(message.groupname, message.username, message.target)) {
             // target is the admin
             if (isAdminInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is an admin thus can't be promoted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is an admin thus can't be promoted!", ActorRef.noSender());
             }
             // target is a co-admin
             else if (isCoAdminInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is a co-admin thus can't be promoted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is a co-admin thus can't be promoted!", ActorRef.noSender());
             } else {
                 // target is a regular user
                 if (isRegularUserInGroup(message.groupname, message.target)) {
@@ -265,7 +286,9 @@ public class ManagingServer extends AbstractActor {
                     removeMutedUserFromGroup(message.groupname, message.target);
                     addCoAdminToGroup(message.groupname, message.target);
                 }
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been promoted to co-admin in " + message.groupname + "!"), ActorRef.noSender());
+                if (isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell("You have been promoted to co-admin in " + message.groupname + "!", ActorRef.noSender());
+                }
             }
         }
     }
@@ -275,22 +298,24 @@ public class ManagingServer extends AbstractActor {
         if (validPromoteDemoteInGroup(message.groupname, message.username, message.target)) {
             // target is the admin
             if (isAdminInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is an admin thus can't be demoted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is an admin thus can't be demoted!", ActorRef.noSender());
             }
             // target is a regular user
             else if (isRegularUserInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is a user thus can't be demoted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is a user thus can't be demoted!", ActorRef.noSender());
             }
             // target is a muted user
             else if (isMutedUserInGroup(message.groupname, message.target)) {
-                getSender().tell(new Messages.ServerReply(message.target + " is a muted user thus can't be demoted!"), ActorRef.noSender());
+                getSender().tell(message.target + " is a muted user thus can't be demoted!", ActorRef.noSender());
             }
             // target is a co-admin
             else if (isCoAdminInGroup(message.groupname, message.target)) {
                 removeCoAdminFromGroup(message.groupname, message.target);
                 addRegularUserToGroup(message.groupname, message.target);
                 // target demoted
-                getUserRef(message.target).tell(new Messages.ServerReply("You have been promoted to user in " + message.groupname + "!"), ActorRef.noSender());
+                if (isUserInSystem(message.target)) {
+                    getUserRef(message.target).tell("You have been promoted to user in " + message.groupname + "!", ActorRef.noSender());
+                }
             }
 
         }
@@ -305,31 +330,37 @@ public class ManagingServer extends AbstractActor {
     }
 
     private void broadcastFromServer(String groupname, String message) {
-        for (String username : groupAllUsers.get(groupname)) {
-            getUserRef(username).tell(new Messages.ServerReply(message), ActorRef.noSender());
+        if (isGroupInSystem(groupname)) {
+            for (String username : groupAllUsers.get(groupname)) {
+                System.out.println("username: " + username);
+                getUserRef(username).tell(message, ActorRef.noSender());
+                System.out.println("SENT");
+            }
         }
     }
 
     private void broadcastFromUser(String groupname, String sender, String message) {
-        for (String username : groupAllUsers.get(groupname)) {
-            getUserRef(username).tell(new Messages.ServerReply(message), getUserRef(sender));
+        if (isUserInSystem(sender) && isGroupInSystem(groupname)) {
+            for (String username : groupAllUsers.get(groupname)) {
+                getUserRef(username).tell(message, getUserRef(sender));
+            }
         }
     }
 
     private boolean validMessageToGroup(String groupname, String username) {
         // group does not exist
         if (!isGroupInSystem(groupname)) {
-            getSender().tell(new Messages.ServerReply(groupname + " does not exists!"), ActorRef.noSender());
+            getSender().tell(groupname + " does not exists!", ActorRef.noSender());
             return false;
         }
         // user is not in group
         else if (!isUserInGroup(groupname, username)) {
-            getSender().tell(new Messages.ServerReply("You are not part of " + groupname + "!"), ActorRef.noSender());
+            getSender().tell("You are not part of " + groupname + "!", ActorRef.noSender());
             return false;
         }
         // user is muted in group
-        else if (!isMutedUserInGroup(groupname, username)) {
-            getSender().tell(new Messages.ServerReply("You are muted for " + groupMutedUsers.get(groupname).get(username) + "in" + groupname + "!"), ActorRef.noSender());
+        else if (isMutedUserInGroup(groupname, username)) {
+            getSender().tell("You are muted for " + groupMutedUsers.get(groupname).get(username) + "in" + groupname + "!", ActorRef.noSender());
             return false;
         } else {
             return true;
@@ -339,17 +370,17 @@ public class ManagingServer extends AbstractActor {
     private boolean validInviteRemovalMuteUnmuteInGroup(String groupname, String username, String target) {
         // group does not exist
         if (!isGroupInSystem(groupname)) {
-            getSender().tell(new Messages.ServerReply(groupname + " does not exists!"), ActorRef.noSender());
+            getSender().tell(groupname + " does not exists!", ActorRef.noSender());
             return false;
         }
         // user is not admin/co-admin in group
         else if (!isCoAdminInGroup(groupname, username) && !isAdminInGroup(groupname, username)) {
-            getSender().tell(new Messages.ServerReply("You are neither an admin nor a co-admin of " + groupname + "!"), ActorRef.noSender());
+            getSender().tell("You are neither an admin nor a co-admin of " + groupname + "!", ActorRef.noSender());
             return false;
         }
         // target doesn't exist
         else if (!isUserInGroup(groupname, target)) {
-            getSender().tell(new Messages.ServerReply(target + " does not exists!"), ActorRef.noSender());
+            getSender().tell(target + " does not exists!", ActorRef.noSender());
             return false;
         } else {
             return true;
@@ -359,17 +390,17 @@ public class ManagingServer extends AbstractActor {
     private boolean validPromoteDemoteInGroup(String groupname, String username, String target) {
         // group does not exist
         if (!isGroupInSystem(groupname)) {
-            getSender().tell(new Messages.ServerReply(groupname + " does not exists!"), ActorRef.noSender());
+            getSender().tell(groupname + " does not exists!", ActorRef.noSender());
             return false;
         }
         // user is not admin/co-admin in group
         else if (!isAdminInGroup(groupname, username)) {
-            getSender().tell(new Messages.ServerReply("You are not an admin of " + groupname + "!"), ActorRef.noSender());
+            getSender().tell("You are not an admin of " + groupname + "!", ActorRef.noSender());
             return false;
         }
         // target doesn't exist
         else if (!isUserInGroup(groupname, target)) {
-            getSender().tell(new Messages.ServerReply(target + " does not exists!"), ActorRef.noSender());
+            getSender().tell(target + " does not exists!", ActorRef.noSender());
             return false;
         } else {
             return true;
@@ -410,47 +441,79 @@ public class ManagingServer extends AbstractActor {
     }
 
     private boolean isUserInGroup(String groupname, String username) {
-        return groupAllUsers.get(groupname).contains(username);
+        if (groupAllUsers.containsKey(groupname)) {
+            return groupAllUsers.get(groupname).contains(username);
+        } else {
+            return false;
+        }
     }
 
     private boolean isMutedUserInGroup(String groupname, String username) {
-        return groupMutedUsers.get(groupname).containsKey(username);
+        if (groupMutedUsers.containsKey(groupname)) {
+            return groupMutedUsers.get(groupname).containsKey(username);
+        } else {
+            return false;
+        }
     }
 
     private void addMutedUserToGroup(String groupname, String username, Double timeout) {
-        groupMutedUsers.get(groupname).put(username, timeout);
+        if (groupMutedUsers.containsKey(groupname)) {
+            groupMutedUsers.get(groupname).put(username, timeout);
+        }
     }
 
     private void removeMutedUserFromGroup(String groupname, String username) {
-        groupMutedUsers.get(groupname).remove(username);
+        if (groupMutedUsers.containsKey(groupname)) {
+            groupMutedUsers.get(groupname).remove(username);
+        }
     }
 
     private boolean isRegularUserInGroup(String groupname, String username) {
-        return groupRegularUsers.get(groupname).contains(username);
+        if (groupRegularUsers.containsKey(groupname)) {
+            return groupRegularUsers.get(groupname).contains(username);
+        } else {
+            return false;
+        }
     }
 
     private void addRegularUserToGroup(String groupname, String username) {
-        groupRegularUsers.get(groupname).add(username);
+        if (groupRegularUsers.containsKey(groupname)) {
+            groupRegularUsers.get(groupname).add(username);
+        }
     }
 
     private void removeRegularUserFromGroup(String groupname, String username) {
-        groupRegularUsers.get(groupname).remove(username);
+        if (groupRegularUsers.containsKey(groupname)) {
+            groupRegularUsers.get(groupname).remove(username);
+        }
     }
 
     private boolean isCoAdminInGroup(String groupname, String username) {
-        return groupCoAdmins.get(groupname).contains(username);
+        if (groupCoAdmins.containsKey(groupname)) {
+            return groupCoAdmins.get(groupname).contains(username);
+        } else {
+            return false;
+        }
     }
 
     private void addCoAdminToGroup(String groupname, String username) {
-        groupCoAdmins.get(groupname).add(username);
+        if (groupCoAdmins.containsKey(groupname)) {
+            groupCoAdmins.get(groupname).add(username);
+        }
     }
 
     private void removeCoAdminFromGroup(String groupname, String username) {
-        groupCoAdmins.get(groupname).remove(username);
+        if (groupCoAdmins.containsKey(groupname)) {
+            groupCoAdmins.get(groupname).remove(username);
+        }
     }
 
     private boolean isAdminInGroup(String groupname, String username) {
-        return groupAdmins.get(groupname).equals(username);
+        if (groupAdmins.containsKey(groupname)) {
+            return groupAdmins.get(groupname).equals(username);
+        } else {
+            return false;
+        }
     }
 
 

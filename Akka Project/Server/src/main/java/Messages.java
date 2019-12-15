@@ -224,15 +224,15 @@ public class Messages {
 
     /////////////////////////////////////// SERVER REPLY ///////////////////////////////////////
 
-    public static final class ServerReply implements Serializable {
-
-        public String serverReply;
-
-        public ServerReply(String serverReply) {
-            this.serverReply = serverReply;
-        }
-
-    }
+//    public static final class ServerReply implements Serializable {
+//
+//        public String serverReply;
+//
+//        public ServerReply(String serverReply) {
+//            this.serverReply = serverReply;
+//        }
+//
+//    }
 
 
 

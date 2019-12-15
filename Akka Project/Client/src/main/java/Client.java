@@ -13,48 +13,34 @@ import java.util.concurrent.TimeUnit;
 
 public class Client extends AbstractActor {
 
-    public ActorSelection server = getContext().actorSelection("akka.tcp://Server@127.0.0.1:2552/user/Server");
+    public ActorSelection whatsAppManagingServer = getContext().actorSelection("akka.tcp://WhatsAppServerSystem@127.0.0.1:3553/user/WhatsAppManagingServer");
 
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Messages.Connect.class, this::onConnect)
+                .match(Object.class, this::onMessage)
                 .build();
     }
 
-    private void onConnect(Messages.Connect message) throws Exception {
-        Object result = ask(server,  message);
-        if(result != null)
-        {
+    private void onMessage(Object message) {
+        Object result = ask(whatsAppManagingServer, (Serializable) message);
+        if (result != null) {
             System.out.println(result);
-        }
-        else{
+        } else {
             System.out.println("server is offline! try again later!");
         }
     }
 
     private static Object ask(ActorSelection actorRef, Serializable Message) {
         final Timeout timeout = new Timeout(Duration.create(2, TimeUnit.SECONDS));
-        Future<Object> rt = Patterns.ask(actorRef, Message, timeout);
-        Object result = null;
+        Future<Object> answer = Patterns.ask(actorRef, Message, timeout);
         try {
-            result = Await.result(rt, timeout.duration());
+            return Await.result(answer, timeout.duration());
         } catch (Exception e) {
         }
-        return result;
+        return null;
     }
 
-    private static Object ask(ActorRef actorRef, Serializable Message) {
-        final Timeout timeout = new Timeout(Duration.create(2, TimeUnit.SECONDS));
-        Future<Object> rt = Patterns.ask(actorRef, Message, timeout);
-        Object result = null;
-        try {
-            result = Await.result(rt, timeout.duration());
-            System.out.println("the result is " + result);
-        } catch (Exception e) {
-        }
-        return result;
-    }
 
 }
