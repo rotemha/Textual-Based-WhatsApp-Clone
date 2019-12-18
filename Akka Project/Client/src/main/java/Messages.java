@@ -15,10 +15,10 @@ public class Messages {
 
     public static final class Disconnect implements Serializable {
 
-        public String username;
+//        public String username;
 
         public Disconnect(String username) {
-            this.username = username;
+//            this.username = username;
 
         }
 

@@ -20,7 +20,7 @@ public class ClientUI {
 
     private static String[] input = null;
     // create the actor system for the client
-    private static final ActorSystem clientSystem = ActorSystem.create("WhatsAppClientSystem");
+    private static ActorSystem clientSystem = null;
     private static ActorRef client = null;
     private static String username = null;
     private static Double timeInSeconds = Double.valueOf("0");
@@ -83,8 +83,11 @@ public class ClientUI {
             username = input[2];
 //            // create the client actor (under the given username)
             try {
-                client = clientSystem.actorOf(Props.create(Client.class), username);
-                client.tell(new Messages.Connect(username), ActorRef.noSender());
+                if (clientSystem == null) {
+                    clientSystem = ActorSystem.create(username);
+                    client = clientSystem.actorOf(Props.create(Client.class), username);
+                    client.tell(new Messages.Connect(username), ActorRef.noSender());
+                }
             } catch (Exception ignored) {
             }
         }

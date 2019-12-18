@@ -57,7 +57,7 @@ public class ManagingServer extends AbstractActor {
 
 
     private void onConnect(Messages.Connect message) {
-        System.out.println("Received Connect from " + message.username);
+        System.out.println("Received Connect from " + getSender());
         // need to check if the server is down (from the client's side) and act accordingly
         // (how can we know if the server is down? how much time should we wait for an ack/error?)
         if (isUserInSystem(message.username)) {
@@ -69,7 +69,7 @@ public class ManagingServer extends AbstractActor {
     }
 
     private void onDisconnect(Messages.Disconnect message) {
-        System.out.println("Received Disconnect from " + message.username);
+        System.out.println("Received Disconnect from " + getSender());
         // need to check if the server is down (from the client's side) and act accordingly
         // (how can we know if the server is down? how much time should we wait for an ack/error?)
         if (isUserInSystem(message.username)) {
@@ -107,6 +107,7 @@ public class ManagingServer extends AbstractActor {
     }
 
     private void onLeaveGroup(Messages.LeaveGroup message) {
+        System.out.println(usersList);
         if (!isUserInGroup(message.groupname, message.username)) {
             getSender().tell(message.username + " is not in " + message.groupname + "!", ActorRef.noSender());
         } else {
@@ -330,11 +331,10 @@ public class ManagingServer extends AbstractActor {
     }
 
     private void broadcastFromServer(String groupname, String message) {
+        System.out.println(usersList);
         if (isGroupInSystem(groupname)) {
             for (String username : groupAllUsers.get(groupname)) {
-                System.out.println("username: " + username);
                 getUserRef(username).tell(message, ActorRef.noSender());
-                System.out.println("SENT");
             }
         }
     }

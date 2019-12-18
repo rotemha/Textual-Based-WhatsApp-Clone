@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d3584912-163a-4119-8f5a-54fa767bcd0f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Client$Client.ic" NAME="Client Coverage Results" MODIFIED="1560455606807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1UynPrhRRQ2EuCSF9sf6ZwvbZcD" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1560701569401" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../assignment2/pom.xml" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.ClientUI">
+    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client" />
+      <module name="Client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ClientUI" />
+      <module name="Client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.ClientUI" />
+        <item itemvalue="Application.Client" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d3584912-163a-4119-8f5a-54fa767bcd0f" name="Default Changelist" comment="" />
+      <created>1560350467891</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1560350467891</updated>
+      <workItem from="1576337683998" duration="79000" />
+      <workItem from="1576337819713" duration="1011000" />
+      <workItem from="1576339015786" duration="1801000" />
+      <workItem from="1576400761899" duration="236000" />
+      <workItem from="1576403231541" duration="56000" />
+      <workItem from="1576403293882" duration="17000" />
+      <workItem from="1576403327840" duration="41000" />
+      <workItem from="1576403382451" duration="23000" />
+      <workItem from="1576403423693" duration="14426000" />
+      <workItem from="1576664171121" duration="1146000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="488" y="71" key="#Client" timestamp="1576337742019">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="488" y="71" key="#Client/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576337742019" />
+    <state x="606" y="301" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1576337701241">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="606" y="301" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576337701241" />
+    <state x="550" y="167" key="FileChooserDialogImpl" timestamp="1576400990148">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="550" y="167" key="FileChooserDialogImpl/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576340211809" />
+    <state x="550" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1576400990148" />
+    <state width="723" height="227" key="GridCell.Tab.0.bottom" timestamp="1576436790033">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="245" key="GridCell.Tab.0.bottom/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576341116369" />
+    <state width="1557" height="259" key="GridCell.Tab.0.bottom/0.0.1536.824/3840.1256.1600.860@3840.1256.1600.860" timestamp="1576338831484" />
+    <state width="723" height="227" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576436790033" />
+    <state width="723" height="227" key="GridCell.Tab.0.center" timestamp="1576436790033">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="245" key="GridCell.Tab.0.center/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576341116369" />
+    <state width="1557" height="259" key="GridCell.Tab.0.center/0.0.1536.824/3840.1256.1600.860@3840.1256.1600.860" timestamp="1576338831483" />
+    <state width="723" height="227" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576436790033" />
+    <state width="723" height="227" key="GridCell.Tab.0.left" timestamp="1576436790033">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="245" key="GridCell.Tab.0.left/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576341116369" />
+    <state width="1557" height="259" key="GridCell.Tab.0.left/0.0.1536.824/3840.1256.1600.860@3840.1256.1600.860" timestamp="1576338831482" />
+    <state width="723" height="227" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576436790033" />
+    <state width="723" height="227" key="GridCell.Tab.0.right" timestamp="1576436790033">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="245" key="GridCell.Tab.0.right/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576341116369" />
+    <state width="1557" height="259" key="GridCell.Tab.0.right/0.0.1536.824/3840.1256.1600.860@3840.1256.1600.860" timestamp="1576338831483" />
+    <state width="723" height="227" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576436790033" />
+    <state x="279" y="55" key="SettingsEditor" timestamp="1576337919672">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="279" y="55" key="SettingsEditor/0.0.1536.824/3840.1256.1600.860@0.0.1536.824" timestamp="1576337919672" />
+    <state x="45" y="190" width="672" height="677" key="run.anything.popup" timestamp="1576417276382">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="45" y="190" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1576417276382" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>akka-sample-main-java</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: com.typesafe.akka:akka-actor_2.12:2.5.0</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
