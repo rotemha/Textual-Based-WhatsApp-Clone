@@ -9,7 +9,7 @@ public class Server
         // create the actor system for the server
         ActorSystem serverSystem = ActorSystem.create("WhatsAppServerSystem");
         // create our server (which is ManagingServer)
-        serverSystem.actorOf(Props.create(ManagingServer.class), "WhatsAppManagingServer");
+        ActorRef managingServer = serverSystem.actorOf(Props.create(ManagingServer.class), "WhatsAppManagingServer");
         System.out.println("Server Started");
     }
 }

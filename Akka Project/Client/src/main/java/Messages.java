@@ -1,4 +1,9 @@
 
+
+import akka.actor.ActorRef;
+import akka.util.ByteString;
+
+import java.io.File;
 import java.io.Serializable;
 
 public class Messages {
@@ -6,20 +11,32 @@ public class Messages {
     public static final class Connect implements Serializable {
 
         public String username;
+        public ActorRef actorRef;
 
-        public Connect(String username) {
+        public Connect(String username, ActorRef actorRef) {
             this.username = username;
+            this.actorRef = actorRef;
         }
 
     }
 
     public static final class Disconnect implements Serializable {
 
-//        public String username;
+        public String username;
 
         public Disconnect(String username) {
-//            this.username = username;
+            this.username = username;
 
+        }
+
+    }
+
+    public static final class GetActorRef implements Serializable {
+
+        public String target;
+
+        public GetActorRef(String target) {
+            this.target = target;
         }
 
     }
@@ -104,6 +121,22 @@ public class Messages {
 
     }
 
+    public static final class SendFileDataToGroup implements Serializable {
+
+        public String username;
+        public String groupname;
+        public String source;
+        public byte[] data;
+
+        public SendFileDataToGroup(String username, String groupname, String source, byte[] data) {
+            this.username = username;
+            this.groupname = groupname;
+            this.source = source;
+            this.data = data;
+        }
+
+    }
+
     public static final class InviteUserToGroup implements Serializable {
 
         public String username;
@@ -134,15 +167,31 @@ public class Messages {
 
     }
 
+    public static final class AddUserToGroup implements Serializable {
+
+        public String username;
+        public String groupname;
+        public String target;
+
+        public AddUserToGroup(String username, String groupname, String target) {
+            this.username = username;
+            this.groupname = groupname;
+            this.target = target;
+        }
+
+    }
+
     public static final class InviteAnswer implements Serializable {
 
         public String username;
         public String groupname;
+        public String target;
         public String answer;
 
-        public InviteAnswer(String username, String groupname, String answer) {
+        public InviteAnswer(String username, String groupname, String target, String answer) {
             this.username = username;
             this.groupname = groupname;
+            this.target = target;
             this.answer = answer;
         }
 
@@ -167,9 +216,9 @@ public class Messages {
         public String username;
         public String groupname;
         public String target;
-        public double timeout;
+        public long timeout;
 
-        public MuteUserInGroup(String username, String groupname, String target, double timeout) {
+        public MuteUserInGroup(String username, String groupname, String target, long timeout) {
             this.username = username;
             this.groupname = groupname;
             this.target = target;
@@ -185,6 +234,20 @@ public class Messages {
         public String target;
 
         public UnmuteUserInGroup(String username, String groupname, String target) {
+            this.username = username;
+            this.groupname = groupname;
+            this.target = target;
+        }
+
+    }
+
+    public static final class AutomaticUnmuteUserInGroup implements Serializable {
+
+        public String username;
+        public String groupname;
+        public String target;
+
+        public AutomaticUnmuteUserInGroup(String username, String groupname, String target) {
             this.username = username;
             this.groupname = groupname;
             this.target = target;
@@ -220,19 +283,69 @@ public class Messages {
 
     }
 
+    public static final class ReceiveTextFromUser implements Serializable {
 
-    /////////////////////////////////////// SERVER REPLY ///////////////////////////////////////
+        public String sender;
+        public String text;
 
-    public static final class ServerReply implements Serializable {
-
-        public String serverReply;
-
-        public ServerReply(String serverReply) {
-            this.serverReply = serverReply;
+        public ReceiveTextFromUser(String sender, String text) {
+            this.sender = sender;
+            this.text = text;
         }
 
     }
 
+    public static final class ReceiveFileFromUser implements Serializable {
+
+        public String sender;
+        public byte[] data;
+        public String sourceFilePath;
+
+
+        public ReceiveFileFromUser(String sender, byte[] data, String sourceFilePath) {
+            this.sender = sender;
+            this.data = data;
+            this.sourceFilePath = sourceFilePath;
+        }
+
+    }
+
+    public static final class ReceiveTextFromGroup implements Serializable {
+
+        public String sender;
+        public String groupname;
+        public String text;
+
+        public ReceiveTextFromGroup(String sender, String groupname, String text) {
+            this.sender = sender;
+            this.groupname = groupname;
+            this.text = text;
+        }
+
+    }
+
+    public static final class ReceiveFileFromGroup implements Serializable {
+
+        public String sender;
+        public String groupname;
+        public String source;
+        public byte[] data;
+
+        public ReceiveFileFromGroup(String sender, String groupname, String source, byte[] data) {
+            this.sender = sender;
+            this.groupname = groupname;
+            this.source = source;
+            this.data = data;
+        }
+
+    }
+
+    public static final class EmptyMessage implements Serializable {
+
+        public EmptyMessage() {
+        }
+
+    }
 
 
 }
